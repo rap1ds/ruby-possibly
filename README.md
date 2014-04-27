@@ -24,7 +24,7 @@ first_name = Maybe(deep_hash)[:account][:profile][:first_name].getOrElse("No fir
 
 ## Documentation
 
-Maybe monad is a programming pattern that allows to treat nil values that same way as non-nil values. This is done by wrapping the value, which may or may not be `nil` to a wrapper class.
+Maybe monad is a programming pattern that allows to treat nil values that same way as non-nil values. This is done by wrapping the value, which may or may not be `nil` to, a wrapper class.
 
 The implementation includes three different classes: `Maybe`, `Some` and `None`. `Some` represents a value, `None` represents a non-value and `Maybe` is a constructor, which results either `Some`, or `None`.
 
