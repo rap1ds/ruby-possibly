@@ -10,9 +10,9 @@ module Maybe
 
   class Some < Maybe
     def get() @value; end
-    def getOrElse(els) @value; end
-    def isSome() true; end
-    def isNone() false; end
+    def get_or_else(els) @value; end
+    def some?() true; end
+    def none?() false; end
     def initialize(value) @value = value; end
     def method_missing(method_sym, *args, &block)
       Maybe(@value.send(method_sym, *args, &block))
@@ -24,9 +24,9 @@ module Maybe
 
   class None < Maybe
     def get() raise "No such element"; end
-    def getOrElse(els=nil) block_given? ? yield : els; end
-    def isSome() false; end
-    def isNone() true; end
+    def get_or_else(els=nil) block_given? ? yield : els; end
+    def some?() false; end
+    def none?() true; end
     def method_missing(method_sym, *args, &block)
       None.new
     end

@@ -20,22 +20,22 @@ describe "possibly" do
 
     it "#select" do
       expect(Maybe::Some.new(2).select { |v| v % 2 == 0 }.get).to eql(2)
-      expect(Maybe::Some.new(1).select { |v| v % 2 == 0 }.isNone).to eql(true)
+      expect(Maybe::Some.new(1).select { |v| v % 2 == 0 }.none?).to eql(true)
     end
   end
 
   describe "values and non-values" do
     it "None" do
-      expect(Maybe(nil).isNone).to eql(true)
-      expect(Maybe([]).isNone).to eql(true)
-      expect(Maybe("").isNone).to eql(true)
+      expect(Maybe(nil).none?).to eql(true)
+      expect(Maybe([]).none?).to eql(true)
+      expect(Maybe("").none?).to eql(true)
     end
 
     it "Some" do
-      expect(Maybe(0).isSome).to eql(true)
-      expect(Maybe(false).isSome).to eql(true)
-      expect(Maybe([1]).isSome).to eql(true)
-      expect(Maybe(" ").isSome).to eql(true)
+      expect(Maybe(0).some?).to eql(true)
+      expect(Maybe(false).some?).to eql(true)
+      expect(Maybe([1]).some?).to eql(true)
+      expect(Maybe(" ").some?).to eql(true)
     end
   end
 
@@ -50,16 +50,16 @@ describe "possibly" do
     end
   end
 
-  describe "get and getOrElse" do
+  describe "get and get_or_else" do
     it "get" do
       expect { Maybe::None.new.get }.to raise_error
       expect(Maybe::Some.new(1).get).to eql(1)
     end
 
-    it "getOrElse" do
-      expect(Maybe::None.new.getOrElse(true)).to eql(true)
-      expect(Maybe::None.new.getOrElse { false }).to eql(false)
-      expect(Maybe::Some.new(1).getOrElse(2)).to eql(1)
+    it "get_or_else" do
+      expect(Maybe::None.new.get_or_else(true)).to eql(true)
+      expect(Maybe::None.new.get_or_else { false }).to eql(false)
+      expect(Maybe::Some.new(1).get_or_else(2)).to eql(1)
     end
   end
 
