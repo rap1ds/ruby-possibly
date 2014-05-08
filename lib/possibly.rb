@@ -3,7 +3,7 @@ module Maybe
     ([:each] + Enumerable.instance_methods).each do |enumerable_method|
       define_method(enumerable_method) { |*args, &block|
         res = __enumerable_value.send(enumerable_method, *args, &block)
-        if res.respond_to?(:each) then Maybe(res[0]) else res end
+        if res.respond_to?(:each) then Maybe(res.first) else res end
       }
     end
   end
