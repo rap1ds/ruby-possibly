@@ -15,7 +15,7 @@ module Maybe
     def none?() false; end
     def initialize(value) @value = value; end
     def method_missing(method_sym, *args, &block)
-      Maybe(@value.send(method_sym, *args, &block))
+      map { |value| value.send(method_sym, *args, &block) }
     end
 
     private
