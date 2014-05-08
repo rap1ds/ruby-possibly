@@ -50,16 +50,16 @@ describe "possibly" do
     end
   end
 
-  describe "get and get_or_else" do
+  describe "get and or_else" do
     it "get" do
       expect { Maybe::None.new.get }.to raise_error
       expect(Maybe::Some.new(1).get).to eql(1)
     end
 
-    it "get_or_else" do
-      expect(Maybe::None.new.get_or_else(true)).to eql(true)
-      expect(Maybe::None.new.get_or_else { false }).to eql(false)
-      expect(Maybe::Some.new(1).get_or_else(2)).to eql(1)
+    it "or_else" do
+      expect(Maybe::None.new.or_else(true)).to eql(true)
+      expect(Maybe::None.new.or_else { false }).to eql(false)
+      expect(Maybe::Some.new(1).or_else(2)).to eql(1)
     end
   end
 
