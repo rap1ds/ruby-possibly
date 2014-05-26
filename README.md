@@ -98,6 +98,10 @@ Same in HAML view, without Maybe():
 = Maybe(@user).friends.count.or_else(0)
 ```
 
+## Tests
+
+`rspec spec/spec.rb`
+
 ## License
 
 [MIT](LICENSE)
