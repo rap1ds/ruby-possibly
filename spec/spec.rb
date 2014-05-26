@@ -60,6 +60,7 @@ describe "possibly" do
       expect(Maybe::None.new.or_else(true)).to eql(true)
       expect(Maybe::None.new.or_else { false }).to eql(false)
       expect(Maybe::Some.new(1).or_else(2)).to eql(1)
+      expect(Maybe::Some.new(1).or_else { 2 }).to eql(1)
     end
   end
 

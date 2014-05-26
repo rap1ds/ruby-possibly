@@ -10,7 +10,7 @@ module Maybe
 
   class Some < Maybe
     def get() @value; end
-    def or_else(els) @value; end
+    def or_else(els=nil) @value; end
     def some?() true; end
     def none?() false; end
     def initialize(value) @value = value; end
