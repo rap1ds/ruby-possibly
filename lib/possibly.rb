@@ -7,6 +7,11 @@ module Maybe
       }
     end
 
+    def to_ary
+      __enumerable_value
+    end
+    alias_method :to_a, :to_ary
+
     def ==(o)
       o.class == self.class
     end

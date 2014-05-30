@@ -59,6 +59,19 @@ describe "possibly" do
     end
   end
 
+  describe "to array" do
+    it "#to_ary" do
+      a, _ = Maybe(1)
+      expect(a).to eql(1)
+      expect([Maybe(1)].map { |(x)| x }).to eql([1])
+    end
+
+    it "#to_a" do
+      expect(Maybe(1).to_a).to eql([1])
+      expect(Maybe(nil).to_a).to eql([])
+    end
+  end
+
   describe "get and or_else" do
     it "get" do
       expect { Maybe::None.new.get }.to raise_error
