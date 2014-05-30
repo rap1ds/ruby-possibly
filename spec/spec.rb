@@ -22,6 +22,18 @@ describe "possibly" do
       expect(Maybe::Some.new(2).select { |v| v % 2 == 0 }.get).to eql(2)
       expect(Maybe::Some.new(1).select { |v| v % 2 == 0 }.none?).to eql(true)
     end
+
+    it "#flat_map" do
+      div = ->(num, denom) {
+        if (denom == 0)
+          Maybe(nil)
+        else
+          Maybe(num.to_f / denom.to_f)
+        end
+      }
+      expect(Maybe(5).flat_map { |x| div.call(1, x) }).to eql(Maybe(0.2))
+      expect(Maybe(0).flat_map { |x| div.call(1, x) }).to eql(Maybe::None.new)
+    end
   end
 
   describe "values and non-values" do
