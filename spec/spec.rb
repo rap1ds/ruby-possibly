@@ -24,6 +24,23 @@ describe "possibly" do
     end
   end
 
+  describe "array" do
+    it "#flatten" do
+      expect(Maybe(nil).flatten.none?).to be_true
+      expect(Maybe(Maybe(nil)).flatten.none?).to be_true
+      expect(Maybe(Maybe(Maybe(nil))).flatten.none?).to be_true
+      expect(Maybe(Maybe(Maybe(Maybe(nil)))).flatten.none?).to be_true
+
+      expect(Maybe(1).flatten) == (Maybe(1))
+      expect(Maybe(Maybe(2)).flatten) == (Maybe(2))
+      expect(Maybe(Maybe(Maybe(3))).flatten) == (Maybe(3))
+      expect(Maybe(Maybe(Maybe(Maybe(4)))).flatten) == (Maybe(4))
+
+      # doesn't get mixed up with array#flatten
+      expect(Maybe(Maybe([[2]])).flatten) == Maybe([[2]])
+    end
+  end
+
   describe "values and non-values" do
     it "None" do
       expect(Maybe(nil).none?).to eql(true)
