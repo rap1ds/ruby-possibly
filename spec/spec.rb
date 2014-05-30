@@ -20,7 +20,7 @@ describe "possibly" do
 
     it "#select" do
       expect(Maybe::Some.new(2).select { |v| v % 2 == 0 }.get).to eql(2)
-      expect(Maybe::Some.new(1).select { |v| v % 2 == 0 }.none?).to eql(true)
+      expect(Maybe::Some.new(1).select { |v| v % 2 == 0 }.is_none?).to eql(true)
     end
 
     it "#flat_map" do
@@ -38,16 +38,16 @@ describe "possibly" do
 
   describe "values and non-values" do
     it "None" do
-      expect(Maybe(nil).none?).to eql(true)
-      expect(Maybe([]).none?).to eql(true)
-      expect(Maybe("").none?).to eql(true)
+      expect(Maybe(nil).is_none?).to eql(true)
+      expect(Maybe([]).is_none?).to eql(true)
+      expect(Maybe("").is_none?).to eql(true)
     end
 
     it "Some" do
-      expect(Maybe(0).some?).to eql(true)
-      expect(Maybe(false).some?).to eql(true)
-      expect(Maybe([1]).some?).to eql(true)
-      expect(Maybe(" ").some?).to eql(true)
+      expect(Maybe(0).is_some?).to eql(true)
+      expect(Maybe(false).is_some?).to eql(true)
+      expect(Maybe([1]).is_some?).to eql(true)
+      expect(Maybe(" ").is_some?).to eql(true)
     end
   end
 
