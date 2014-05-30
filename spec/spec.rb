@@ -31,13 +31,13 @@ describe "possibly" do
       expect(Maybe(Maybe(Maybe(nil))).flatten.none?).to be_true
       expect(Maybe(Maybe(Maybe(Maybe(nil)))).flatten.none?).to be_true
 
-      expect(Maybe(1).flatten) == (Maybe(1))
-      expect(Maybe(Maybe(2)).flatten) == (Maybe(2))
-      expect(Maybe(Maybe(Maybe(3))).flatten) == (Maybe(3))
-      expect(Maybe(Maybe(Maybe(Maybe(4)))).flatten) == (Maybe(4))
+      expect(Maybe(1).flatten).to eql(Maybe(1))
+      expect(Maybe(Maybe(2)).flatten).to eql(Maybe(2))
+      expect(Maybe(Maybe(Maybe(3))).flatten).to eql(Maybe(3))
+      expect(Maybe(Maybe(Maybe(Maybe(4)))).flatten).to eql(Maybe(4))
 
       # doesn't get mixed up with array#flatten
-      expect(Maybe(Maybe([[2]])).flatten) == Maybe([[2]])
+      expect(Maybe(Maybe([[2]])).flatten).to eql(Maybe([[2]]))
     end
   end
 
