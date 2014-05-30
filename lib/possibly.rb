@@ -19,13 +19,6 @@ module Maybe
     def some?() true; end
     def none?() false; end
     def initialize(value) @value = value; end
-    def flatten()
-      if @value.is_a?(Maybe)
-        @value.flatten
-      else
-        Maybe(@value)
-      end
-    end
     def ==(o)
       super && get == o.get
     end
@@ -43,9 +36,6 @@ module Maybe
     def or_else(els=nil) block_given? ? yield : els; end
     def some?() false; end
     def none?() true; end
-    def flatten
-      None.new
-    end
     def method_missing(method_sym, *args, &block)
       None.new
     end
