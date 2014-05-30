@@ -67,6 +67,15 @@ describe "possibly" do
     end
   end
 
+  describe "equality" do
+    it "#eql?" do
+      expect(Maybe(nil).eql? Maybe(nil)).to be_true
+      expect(Maybe(nil).eql? Maybe(5)).to be_false
+      expect(Maybe(5).eql? Maybe(5)).to be_true
+      expect(Maybe(3).eql? Maybe(5)).to be_false
+    end
+  end
+
   describe "get and or_else" do
     it "get" do
       expect { Maybe::None.new.get }.to raise_error

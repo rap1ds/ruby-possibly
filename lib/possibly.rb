@@ -6,6 +6,11 @@ module Maybe
         if res.respond_to?(:each) then Maybe(res.first) else res end
       }
     end
+
+    def ==(o)
+      o.class == self.class
+    end
+    alias_method :eql?, :==
   end
 
   class Some < Maybe
@@ -21,6 +26,10 @@ module Maybe
         Maybe(@value)
       end
     end
+    def ==(o)
+      super && get == o.get
+    end
+    alias_method :eql?, :==
     def method_missing(method_sym, *args, &block)
       map { |value| value.send(method_sym, *args, &block) }
     end
