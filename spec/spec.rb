@@ -4,18 +4,18 @@ describe "possibly" do
   describe "enumerable" do
     it "#each" do
       expect { |b| Some(1).each(&b) }.to yield_with_args(1)
-      expect { |b| None.each(&b) }.not_to yield_with_args
+      expect { |b| None().each(&b) }.not_to yield_with_args
     end
 
     it "#map" do
       expect(Some(2).map { |v| v * v }.get).to eql(4)
-      expect { |b| None.map(&b) }.not_to yield_with_args
+      expect { |b| None().map(&b) }.not_to yield_with_args
     end
 
     it "#inject" do
       expect(Some(2).inject(5) { |v| v * v }).to eql(25)
-      expect { |b| None.inject(&b) }.not_to yield_with_args
-      expect(None.inject(5) { }).to eql(5)
+      expect { |b| None().inject(&b) }.not_to yield_with_args
+      expect(None().inject(5) { }).to eql(5)
     end
 
     it "#select" do
@@ -32,7 +32,7 @@ describe "possibly" do
         end
       }
       expect(Maybe(5).flat_map { |x| div.call(1, x) }).to eql(Maybe(0.2))
-      expect(Maybe(0).flat_map { |x| div.call(1, x) }).to eql(None)
+      expect(Maybe(0).flat_map { |x| div.call(1, x) }).to eql(None())
     end
   end
 
@@ -53,12 +53,12 @@ describe "possibly" do
 
   describe "is_a" do
     it "Some" do
-      expect(Some(1).is_a?(Maybe::Some)).to eql(true)
-      expect(Some(1).is_a?(Maybe::None)).to eql(false)
-      expect(None.is_a?(Maybe::Some)).to eql(false)
-      expect(None.is_a?(Maybe::None)).to eql(true)
-      expect(Some(1).is_a?(Maybe::Maybe)).to eql(true)
-      expect(None.is_a?(Maybe::Maybe)).to eql(true)
+      expect(Some(1).is_a?(Some)).to eql(true)
+      expect(Some(1).is_a?(None)).to eql(false)
+      expect(None().is_a?(Some)).to eql(false)
+      expect(None().is_a?(None)).to eql(true)
+      expect(Some(1).is_a?(Maybe)).to eql(true)
+      expect(None().is_a?(Maybe)).to eql(true)
     end
   end
 
@@ -91,8 +91,8 @@ describe "possibly" do
     end
 
     it "or_else" do
-      expect(None.or_else(true)).to eql(true)
-      expect(None.or_else { false }).to eql(false)
+      expect(None().or_else(true)).to eql(true)
+      expect(None().or_else { false }).to eql(false)
       expect(Some(1).or_else(2)).to eql(1)
       expect(Some(1).or_else { 2 }).to eql(1)
     end
