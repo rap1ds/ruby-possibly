@@ -95,9 +95,19 @@ end
 # rubocop:disable MethodName
 def Maybe(value)
   if value.nil? || (value.respond_to?(:length) && value.length == 0)
-    Maybe::None.new
+    None
   else
-    Maybe::Some.new(value)
+    Some(value)
   end
 end
+
+def Some(value)
+  Maybe::Some.new(value)
+end
+
+def None
+  Maybe::None.new
+end
+
+None = None()
 # rubocop:enable MethodName
