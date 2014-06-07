@@ -46,6 +46,10 @@ class Some < Maybe
   end
   alias_method :eql?, :==
 
+  def ===(other)
+    other && other.class == self.class && @value === other.get
+  end
+
   def method_missing(method_sym, *args, &block)
     map { |value| value.send(method_sym, *args, &block) }
   end

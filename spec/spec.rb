@@ -71,6 +71,21 @@ describe "possibly" do
     end
   end
 
+  describe "case equality" do
+    it "#===" do
+      expect(Some(1) === Some(1)).to be_true
+      expect(Maybe(1) === Some(2)).to be_false
+      expect(Some(1) === None).to be_false
+      expect(None === Some(1)).to be_false
+      expect(None === None()).to be_true
+      expect(Some((1..3)) === Some(2)).to be_true
+      expect(Some(Integer) === Some(2)).to be_true
+      expect(Maybe === Some(2)).to be_true
+      expect(Maybe === None()).to be_true
+      expect(Some === Some(6)).to be_true
+    end
+  end
+
   describe "to array" do
     it "#to_ary" do
       a, _ = Maybe(1)
