@@ -29,8 +29,8 @@ Maybe monad is a programming pattern that allows to treat nil values that same w
 The implementation includes three different classes: `Maybe`, `Some` and `None`. `Some` represents a value, `None` represents a non-value and `Maybe` is a constructor, which results either `Some`, or `None`.
 
 ```ruby
-Maybe("I'm a value")    => #<Maybe::Some:0x007ff7a85621e0 @value="I'm a value">
-Maybe(nil)              => #<Maybe::None:0x007ff7a852bd20>
+Maybe("I'm a value")    => #<Some:0x007ff7a85621e0 @value="I'm a value">
+Maybe(nil)              => #<None:0x007ff7a852bd20>
 ```
 
 Both `Some` and `None` implement four trivial methods: `is_some?`, `is_none?`, `get` and `or_else`
@@ -51,8 +51,8 @@ In addition, `Some` and `None` implement `Enumerable`, so all methods available 
 ```ruby
 Maybe("Print me!").each { |v| puts v }      => it puts "Print me!"
 Maybe(nil).each { |v| puts v }              => puts nothing
-Maybe(4).map { |v| Math.sqrt(v) }           => #<Maybe::Some:0x007ff7ac8697b8 @value=2.0>
-Maybe(nil).map { |v| Math.sqrt(v) }         => #<Maybe::None:0x007ff7ac809b10>
+Maybe(4).map { |v| Math.sqrt(v) }           => #<Some:0x007ff7ac8697b8 @value=2.0>
+Maybe(nil).map { |v| Math.sqrt(v) }         => #<None:0x007ff7ac809b10>
 Maybe(2).inject(3) { |a, b| a + b }         => 5
 None().inject(3) { |a, b| a + b }           => 3
 ```
@@ -60,42 +60,43 @@ None().inject(3) { |a, b| a + b }           => 3
 All the other methods you call on `Some` are forwarded to the `value`.
 
 ```ruby
-Maybe("I'm a value").upcase                 => #<Maybe::Some:0x007ffe198e6128 @value="I'M A VALUE">
+Maybe("I'm a value").upcase                 => #<Some:0x007ffe198e6128 @value="I'M A VALUE">
 Maybe(nil).upcase                           => None
 ```
 
 ### Case expression
 
-Maybe implements threequals method `#===`, so it can be used to match the type in case expressions:
+Maybe implements threequals method `#===`, so it can be used in case expressions:
 
 ```ruby
 value = Maybe([nil, 1, 2, 3, 4, 5, 6].sample)
 
 case value
 when Some
-  puts "Got Some value: #{value.get}"
+  puts "Got Some: #{value.get}"
 when None
   puts "Got None"
 end
 ```
 
-If the type is Some, you can also match the value of the Some:
+If the type of Maybe is Some, you can also match the value:
 
 ```ruby
-value = Maybe([nil, 1, 2, 3, 4, 5, 6].sample)
+value = Maybe([nil, 0, 1, 2, 3, 4, 5, 6].sample)
 
 case value
+when Some(0)
+  puts "Got zero"
 when Some((1..3))
   puts "Got a low number: #{value.get}"
 when Some((4..6))
-  puts "Got a high number, yey! #{value.get}"
+  puts "Got a high number: #{value.get}"
 when None
   puts "Got nothing"
 end
 ```
 
-You might not known this, but Proc class aliases #=== to the #call method. That means that you can use Procs and lambdas
-in case expressions. It works also nicely with Maybe:
+For more complicated matching you can use Procs and lambdas. Proc class aliases #=== to the #call method. In practice this means that you can use Procs and lambdas in case expressions. It works also nicely with Maybe:
 
 ```ruby
 even? = ->(a) { a % 2 == 0 }
