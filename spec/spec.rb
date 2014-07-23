@@ -86,6 +86,43 @@ describe "possibly" do
     end
   end
 
+  describe "case expression" do
+    def test_case_when(case_value, match_value, non_match_value)
+      value = case case_value
+      when non_match_value
+        false
+      when match_value
+        true
+      else
+        false
+      end
+
+      expect(value).to be_true
+    end
+
+    it "matches Some" do
+      test_case_when(Maybe(1), Some, None)
+    end
+
+    it "matches None" do
+      test_case_when(Maybe(nil), None, Some)
+    end
+
+    it "matches to integer value" do
+      test_case_when(Maybe(1), Some(1), Some(2))
+    end
+
+    it "matches to range" do
+      test_case_when(Maybe(1), Some((0..2)), Some((2..3)))
+    end
+
+    it "matches to lambda" do
+      even = ->(a) { a % 2 == 0 }
+      odd = ->(a) { a % 2 == 1 }
+      test_case_when(Maybe(2), Some(even), Some(odd))
+    end
+  end
+
   describe "to array" do
     it "#to_ary" do
       a, _ = Maybe(1)

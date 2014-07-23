@@ -64,6 +64,55 @@ Maybe("I'm a value").upcase                 => #<Maybe::Some:0x007ffe198e6128 @v
 Maybe(nil).upcase                           => None
 ```
 
+### Case expression
+
+Maybe implements threequals method `#===`, so it can be used to match the type in case expressions:
+
+```ruby
+value = Maybe([nil, 1, 2, 3, 4, 5, 6].sample)
+
+case value
+when Some
+  puts "Got Some value: #{value.get}"
+when None
+  puts "Got None"
+end
+```
+
+If the type is Some, you can also match the value of the Some:
+
+```ruby
+value = Maybe([nil, 1, 2, 3, 4, 5, 6].sample)
+
+case value
+when Some((1..3))
+  puts "Got a low number: #{value.get}"
+when Some((4..6))
+  puts "Got a high number, yey! #{value.get}"
+when None
+  puts "Got nothing"
+end
+```
+
+You might not known this, but Proc class aliases #=== to the #call method. That means that you can use Procs and lambdas
+in case expressions. It works also nicely with Maybe:
+
+```ruby
+even? = ->(a) { a % 2 == 0 }
+odd? = ->(a) { a % 2 != 0 }
+
+value = Maybe([nil, 1, 2, 3, 4, 5, 6].sample)
+
+case value
+when Some(even?)
+  puts "Got even value: #{value.get}"
+when Some(odd?)
+  puts "Got odd value: #{value.get}"
+when None
+  puts "Got None"
+end
+```
+
 ## Examples
 
 Instead of using if-clauses to define whether a value is a `nil`, you can wrap the value with `Maybe()` and threat it the same way whether or not it is a `nil`
