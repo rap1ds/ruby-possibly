@@ -114,6 +114,29 @@ when None
 end
 ```
 
+### case_of
+
+Ruby doesn't support binding the value of Some to a variable. The following does not work in Ruby:
+
+```ruby
+case apples
+when Some(1)
+  puts "one apple"
+when Some(x)
+  puts "#{x} apples"
+when None
+  puts "Unknown number of apples"
+end
+```
+
+To workaround this limitation, Maybe implements a method `case_of`, which internally uses case expression:
+
+```ruby
+apples.case_of(Some(1)) { |_| puts "1 apple" }
+apples.case_of(Some(Int)) { |x| puts "#{x} apples" }
+apples.case_of(None) { |_| puts "Unknown number of apples" }
+```
+
 ## Examples
 
 Instead of using if-clauses to define whether a value is a `nil`, you can wrap the value with `Maybe()` and threat it the same way whether or not it is a `nil`
