@@ -116,7 +116,7 @@ end
 
 ### case_of
 
-Ruby doesn't support binding the value of Some to a variable. The following does not work in Ruby:
+Maybe implements the threequals method in a way which allows it to be used in case expressions pretty neatly: You can match both the type (`None` or `Some`) and the value of `Some`. It almost feels like pattern matching in functional language. However, there's one big shortcoming. Ruby doesn't allow binding the value of `Some` to a variable, so you must use the `get` method to do that. The following does not work in Ruby:
 
 ```ruby
 case apples
@@ -129,12 +129,37 @@ when None
 end
 ```
 
+Instead, you have to use `get`, which is cubersome:
+
+```ruby
+case apples
+when Some(1)
+  puts "one apple"
+when Some
+  x = apples.get
+  puts "#{x} apples"
+when None
+  puts "Unknown number of apples"
+end
+```
+
 To workaround this limitation, Maybe implements a method `case_of`, which internally uses case expression:
 
 ```ruby
 apples.case_of(Some(1)) { |_| puts "1 apple" }
-apples.case_of(Some(Int)) { |x| puts "#{x} apples" }
+apples.case_of(Some(Integer)) { |x| puts "#{x} apples" }
 apples.case_of(None) { |_| puts "Unknown number of apples" }
+```
+
+```haml
+- apples.case_of(Some(1)) do
+  = "1 apple"
+
+- apples.case_of(Some(Integer)) do |x|
+  = puts "#{x} apples"
+
+- apples.case_of(None) do
+  = "Unknown number of apples"
 ```
 
 ## Examples

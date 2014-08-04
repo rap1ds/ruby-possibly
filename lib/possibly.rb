@@ -54,6 +54,10 @@ class Some < Maybe
     map { |value| value.send(method_sym, *args, &block) }
   end
 
+  def case_of(other, &block)
+    block.call(@value) if self === other
+  end
+
   private
 
   def __enumerable_value
@@ -83,6 +87,10 @@ class None < Maybe
 
   def method_missing(*)
     self
+  end
+
+  def case_of(other, &block)
+    block.call if other === self
   end
 
   private

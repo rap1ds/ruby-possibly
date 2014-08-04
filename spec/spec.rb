@@ -123,6 +123,18 @@ describe "possibly" do
     end
   end
 
+  describe "case_of" do
+
+    it "case_of None" do
+      expect(Maybe(nil).case_of(None) { false }).to eql(false)
+    end
+
+    it "case_of Some" do
+      expect(Maybe(1).case_of(Some(1)) { |x| true }).to eql(true)
+    end
+
+  end
+
   describe "to array" do
     it "#to_ary" do
       a, _ = Maybe(1)
