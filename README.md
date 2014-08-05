@@ -1,5 +1,6 @@
 # Possibly - Maybe monad for Ruby
 
+[![Travis CI](https://travis-ci.org/rap1ds/ruby-possibly.svg?branch=master)](https://travis-ci.org/rap1ds/ruby-possibly)
 [![Code Climate](https://codeclimate.com/github/rap1ds/ruby-possibly/badges/gpa.svg)](https://codeclimate.com/github/rap1ds/ruby-possibly)
 
 Maybe monad implementation for Ruby
