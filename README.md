@@ -1,5 +1,7 @@
 # Possibly - Maybe monad for Ruby
 
+[![Code Climate](https://codeclimate.com/github/rap1ds/ruby-possibly/badges/gpa.svg)](https://codeclimate.com/github/rap1ds/ruby-possibly)
+
 Maybe monad implementation for Ruby
 
 ```ruby
