@@ -64,25 +64,25 @@ describe "possibly" do
 
   describe "equality" do
     it "#eql?" do
-      expect(Maybe(nil).eql? Maybe(nil)).to be_true
-      expect(Maybe(nil).eql? Maybe(5)).to be_false
-      expect(Maybe(5).eql? Maybe(5)).to be_true
-      expect(Maybe(3).eql? Maybe(5)).to be_false
+      expect(Maybe(nil).eql? Maybe(nil)).to be true
+      expect(Maybe(nil).eql? Maybe(5)).to be false
+      expect(Maybe(5).eql? Maybe(5)).to be true
+      expect(Maybe(3).eql? Maybe(5)).to be false
     end
   end
 
   describe "case equality" do
     it "#===" do
-      expect(Some(1) === Some(1)).to be_true
-      expect(Maybe(1) === Some(2)).to be_false
-      expect(Some(1) === None).to be_false
-      expect(None === Some(1)).to be_false
-      expect(None === None()).to be_true
-      expect(Some((1..3)) === Some(2)).to be_true
-      expect(Some(Integer) === Some(2)).to be_true
-      expect(Maybe === Some(2)).to be_true
-      expect(Maybe === None()).to be_true
-      expect(Some === Some(6)).to be_true
+      expect(Some(1) === Some(1)).to be true
+      expect(Maybe(1) === Some(2)).to be false
+      expect(Some(1) === None).to be false
+      expect(None === Some(1)).to be false
+      expect(None === None()).to be true
+      expect(Some((1..3)) === Some(2)).to be true
+      expect(Some(Integer) === Some(2)).to be true
+      expect(Maybe === Some(2)).to be true
+      expect(Maybe === None()).to be true
+      expect(Some === Some(6)).to be true
     end
   end
 
@@ -97,7 +97,7 @@ describe "possibly" do
         false
       end
 
-      expect(value).to be_true
+      expect(value).to be true
     end
 
     it "matches Some" do

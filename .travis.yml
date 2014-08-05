@@ -3,6 +3,6 @@ rvm:
   - 2.1.0
   - 1.9.3
 before_script:
-  - gem install rspec -v 2.14.8
+  - gem install rspec
 script:
   - rspec spec/spec.rb
