@@ -156,4 +156,24 @@ describe "possibly" do
       expect(Some([1, 2, 3]).map { |arr| arr.map { |v| v * v } }.get).to eql([1, 4, 9])
     end
   end
+
+  describe "combine" do
+    it "combines multiple Some values" do
+      expect(Maybe("foo").combine(Maybe("bar")).get).to eql(["foo", "bar"])
+      expect(Maybe("foo").combine(Maybe("bar"), Maybe("baz")).get).to eql(["foo", "bar", "baz"])
+      expect(Maybe.combine(Maybe("foo"), Maybe("bar"), Maybe("baz")).get).to eql(["foo", "bar", "baz"])
+    end
+
+    it "combines with block" do
+      expect(Maybe("foo").combine(Maybe("bar")) { |a, b| "#{a} + #{b}" }.get).to eql("foo + bar")
+      expect(Maybe.combine(Maybe("foo"), Maybe("bar")) { |a, b| "#{a} + #{b}" }.get).to eql("foo + bar")
+    end
+
+    it "returns None if any None" do
+      expect(Maybe("foo").combine(Maybe(nil)).or_else { false }).to eql(false)
+      expect(Maybe("foo").combine(Maybe(nil)) { |a, b| "#{a} + #{b}" }.or_else { false }).to eql(false)
+      expect(Maybe.combine(Maybe("foo"), Maybe(nil)).or_else { false }).to eql(false)
+      expect(Maybe.combine(Maybe("foo"), Maybe(nil)) { |a, b| "#{a} + #{b}" }.or_else { false }).to eql(false)
+    end
+  end
 end
