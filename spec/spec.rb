@@ -162,11 +162,9 @@ describe "possibly" do
       expect(Maybe("foo").combine(Maybe("bar")).get).to eql(["foo", "bar"])
       expect(Maybe("foo").combine(Maybe("bar"), Maybe("baz")).get).to eql(["foo", "bar", "baz"])
       expect(Maybe.combine(Maybe("foo"), Maybe("bar"), Maybe("baz")).get).to eql(["foo", "bar", "baz"])
-    end
-
-    it "combines with block" do
-      expect(Maybe("foo").combine(Maybe("bar")) { |a, b| "#{a} + #{b}" }.get).to eql("foo + bar")
-      expect(Maybe.combine(Maybe("foo"), Maybe("bar")) { |a, b| "#{a} + #{b}" }.get).to eql("foo + bar")
+      expect(Maybe.combine(Maybe("foo"), Maybe("bar"), Maybe("baz")).map do |(foo, bar, baz)|
+        "#{foo} and #{bar} and finally, #{baz}"
+      end.get).to eql ("foo and bar and finally, baz")
     end
 
     it "returns None if any None" do

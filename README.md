@@ -116,6 +116,19 @@ when None
 end
 ```
 
+## `combine([maybes])`
+
+With `combine` you can create a new `Maybe` which includes an array of values from combined `Maybe`s. If any of the combined `Maybe`s is a `None`, a `None` will be returned.
+
+```
+mparams = Maybe(params)
+
+duration = Maybe
+  .combine(mparams[:start_date], mparams[:end_date])
+  .map { |(start, end)| Date.parse(end) - Date.parse(start) }
+  .get_or_else "Unknown"
+```
+
 ## Examples
 
 Instead of using if-clauses to define whether a value is a `nil`, you can wrap the value with `Maybe()` and threat it the same way whether or not it is a `nil`
