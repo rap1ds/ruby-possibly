@@ -156,4 +156,42 @@ describe "possibly" do
       expect(Some([1, 2, 3]).map { |arr| arr.map { |v| v * v } }.get).to eql([1, 4, 9])
     end
   end
+
+  describe "laziness" do
+    it "can be initialized lazily" do
+      init_called = false
+      map_called = false
+
+      m = Maybe do
+        init_called = true
+        2
+      end.map do |v|
+        map_called = true
+        v * v
+      end
+
+      expect(init_called).to eql(false)
+      expect(map_called).to eql(false)
+      expect(m.get).to eql(4)
+      expect(init_called).to eql(true)
+      expect(map_called).to eql(true)
+    end
+
+    it "can be converted to lazy" do
+      map_called = false
+
+      m = Maybe(2).lazy.map do |v|
+        map_called = true
+        v * v
+      end
+
+      expect(map_called).to eql(false)
+      expect(m.get).to eql(4)
+      expect(map_called).to eql(true)
+    end
+  end
+
+  def factors(num)
+    Maybe((2..num - 1).select { |n| num % n == 0 })
+  end
 end

@@ -2,8 +2,12 @@ class Maybe
   ([:each] + Enumerable.instance_methods).each do |enumerable_method|
     define_method(enumerable_method) do |*args, &block|
       res = __enumerable_value.send(enumerable_method, *args, &block)
-      res.respond_to?(:each) ? Maybe(res.first) : res
+      res.respond_to?(:each) ? rewrap(res) : res
     end
+  end
+
+  def initialize(lazy_enumerable)
+    @lazy = lazy_enumerable
   end
 
   def to_ary
@@ -15,6 +19,53 @@ class Maybe
     other.class == self.class
   end
   alias_method :eql?, :==
+
+  def get
+    __evaluated.get
+  end
+
+  def or_else(*args)
+    __evaluated.or_else(*args)
+  end
+
+  # rubocop:disable PredicateName
+  def is_some?
+    __evaluated.is_some?
+  end
+
+  def is_none?
+    __evaluated.is_none?
+  end
+  # rubocop:enable PredicateName
+
+  def lazy
+    Maybe.new(__enumerable_value.lazy)
+  end
+
+  private
+
+  def __enumerable_value
+    @lazy
+  end
+
+  def __evaluated
+    @evaluated ||= Maybe(@lazy.first)
+  end
+
+  def rewrap(enumerable)
+    Maybe.new(enumerable)
+  end
+
+  def self.from_block(&block)
+    Maybe.new(lazy_enum_from_block(&block))
+  end
+
+  def self.lazy_enum_from_block(&block)
+    Enumerator.new do |yielder|
+      yielder << block.call
+    end.lazy
+  end
+
 end
 
 # Represents a non-empty value
@@ -59,10 +110,16 @@ class Some < Maybe
   def __enumerable_value
     [@value]
   end
+
+  def rewrap(enumerable)
+    Maybe(enumerable.first)
+  end
 end
 
 # Represents an empty value
 class None < Maybe
+  def initialize; end
+
   def get
     fail 'No such element'
   end
@@ -93,11 +150,15 @@ class None < Maybe
 end
 
 # rubocop:disable MethodName
-def Maybe(value)
-  if value.nil? || (value.respond_to?(:length) && value.length == 0)
-    None()
+def Maybe(value = nil, &block)
+  if block
+    Maybe.from_block(&block)
   else
-    Some(value)
+    if value.nil? || (value.respond_to?(:length) && value.length == 0)
+      None()
+    else
+      Some(value)
+    end
   end
 end
 
