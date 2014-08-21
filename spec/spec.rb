@@ -83,6 +83,16 @@ describe "possibly" do
       expect(Maybe === Some(2)).to be true
       expect(Maybe === None()).to be true
       expect(Some === Some(6)).to be true
+
+      expect(Some(1) === Some(1).lazy).to be true
+      expect(Maybe(1) === Some(2).lazy).to be false
+      expect(None === Some(1).lazy).to be false
+      expect(None === None().lazy).to be true
+      expect(Some((1..3)) === Some(2).lazy).to be true
+      expect(Some(Integer) === Some(2).lazy).to be true
+      expect(Maybe === Some(2).lazy).to be true
+      expect(Maybe === None().lazy).to be true
+      expect(Some === Some(6).lazy).to be true
     end
   end
 
@@ -120,6 +130,10 @@ describe "possibly" do
       even = ->(a) { a % 2 == 0 }
       odd = ->(a) { a % 2 == 1 }
       test_case_when(Maybe(2), Some(even), Some(odd))
+    end
+
+    it "matches to lazy" do
+      test_case_when(Maybe { 1 }, Some(1), Some(2))
     end
   end
 

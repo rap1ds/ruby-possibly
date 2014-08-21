@@ -98,7 +98,11 @@ class Some < Maybe
   alias_method :eql?, :==
 
   def ===(other)
-    other && other.class == self.class && @value === other.get
+    other && (other.class == self.class || other.class == Maybe) && @value === other.get
+  end
+
+  def self.===(other)
+    super || (other.class == Maybe && other.is_some?)
   end
 
   def method_missing(method_sym, *args, &block)
@@ -137,6 +141,10 @@ class None < Maybe
     true
   end
   # rubocop:enable PredicateName
+
+  def self.===(other)
+    super || (other.class == Maybe && other.is_none?)
+  end
 
   def method_missing(*)
     self
