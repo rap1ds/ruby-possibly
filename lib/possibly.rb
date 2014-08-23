@@ -15,6 +15,19 @@ class Maybe
     other.class == self.class
   end
   alias_method :eql?, :==
+
+  def combine(*maybes)
+    Maybe.combine(self, *maybes)
+  end
+
+  def self.combine(*maybes)
+    if maybes.any?(&:is_none?)
+      None()
+    else
+      values = maybes.map(&:get)
+      Maybe(values)
+    end
+  end
 end
 
 # Represents a non-empty value
