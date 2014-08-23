@@ -83,6 +83,16 @@ describe "possibly" do
       expect(Maybe === Some(2)).to be true
       expect(Maybe === None()).to be true
       expect(Some === Some(6)).to be true
+
+      expect(Some(1) === Some(1).lazy).to be true
+      expect(Maybe(1) === Some(2).lazy).to be false
+      expect(None === Some(1).lazy).to be false
+      expect(None === None().lazy).to be true
+      expect(Some((1..3)) === Some(2).lazy).to be true
+      expect(Some(Integer) === Some(2).lazy).to be true
+      expect(Maybe === Some(2).lazy).to be true
+      expect(Maybe === None().lazy).to be true
+      expect(Some === Some(6).lazy).to be true
     end
   end
 
@@ -120,6 +130,10 @@ describe "possibly" do
       even = ->(a) { a % 2 == 0 }
       odd = ->(a) { a % 2 == 1 }
       test_case_when(Maybe(2), Some(even), Some(odd))
+    end
+
+    it "matches to lazy" do
+      test_case_when(Maybe { 1 }, Some(1), Some(2))
     end
   end
 
@@ -204,5 +218,43 @@ describe "possibly" do
       expect(Maybe.combine(Maybe("foo"), Maybe(nil)).get_or_else { false }).to eql(false)
       expect(Maybe.combine(Maybe("foo"), Maybe(nil)) { |a, b| "#{a} + #{b}" }.get_or_else { false }).to eql(false)
     end
+  end
+
+  describe "laziness" do
+    it "can be initialized lazily" do
+      init_called = false
+      map_called = false
+
+      m = Maybe do
+        init_called = true
+        2
+      end.map do |v|
+        map_called = true
+        v * v
+      end
+
+      expect(init_called).to eql(lazy_enabled ? false : true)
+      expect(map_called).to eql(lazy_enabled ? false : true)
+      expect(m.get).to eql(4)
+      expect(init_called).to eql(true)
+      expect(map_called).to eql(true)
+    end
+
+    it "can be converted to lazy" do
+      map_called = false
+
+      m = Maybe(2).lazy.map do |v|
+        map_called = true
+        v * v
+      end
+
+      expect(map_called).to eql(lazy_enabled ? false : true)
+      expect(m.get).to eql(4)
+      expect(map_called).to eql(true)
+    end
+  end
+
+  def lazy_enabled
+    @lazy_enabled ||= [].respond_to?(:lazy)
   end
 end

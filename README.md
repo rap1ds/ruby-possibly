@@ -116,6 +116,7 @@ when None
 end
 ```
 
+<<<<<<< HEAD
 ## or_else
 
 `or_else` returns the current `Maybe` if it's a `Some`, but if it's a `None`, it returns the parameter that was given to it (which should be a `Maybe`).
@@ -148,6 +149,60 @@ duration = Maybe
   .get_or_else "Unknown"
 ```
 
+=======
+## Laziness
+
+Ruby 2.0 introduced lazy enumerables. By calling `lazy` on any enumerable, you get the lazy version of it. Same goes with Maybe.
+
+```ruby
+
+called = false
+m = Maybe(2).lazy.map do |value|
+  called = true;
+  value * value;
+end
+
+puts called # => false
+puts m.get # => 4 # Map is called now
+puts called # => true
+```
+
+You can also initialize Maybe lazily by giving it a block.
+
+```ruby
+init_called = false
+map_called = false
+
+m = Maybe do
+  init_called = true
+  do_some_expensive_calculation     # returns 1234567890
+end.map do |value|
+  map_called = true;
+  "the value of expensive calculation: #{value}";
+end
+
+puts init_called # => false
+puts map_called # => false
+puts m.get # => "the value of expensive calculation: 1234567890 # Map is called now
+puts init_called # => true
+puts map_called # => true
+```
+
+Note that if you initialize a maybe non-lazily and inspect it, you see from the class that it is a Some:
+
+```ruby
+Maybe("I'm not lazy")               => #<Some:0x007ff7ac8697b8 @value=2>
+```
+
+However, if you initialize Maybe lazily, we do not know the type before the lazy block is evaluated. Thus, you see a different output when printing the value
+
+```ruby
+Maybe { "I'm lazy" }                => #<Maybe:0x0000010107a600 @lazy=#<Enumerator::Lazy: #<Enumerator: #<Enumerator::Generator:0x0000010107a768>:each>>>
+```
+
+This feature needs Ruby version >= 2.0.0.
+
+>>>>>>> lazy
 ## Examples
 
 Instead of using if-clauses to define whether a value is a `nil`, you can wrap the value with `Maybe()` and threat it the same way whether or not it is a `nil`
