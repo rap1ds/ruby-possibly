@@ -39,8 +39,12 @@ class Some < Maybe
     @value
   end
 
-  def or_else(*)
+  def get_or_else(*)
     @value
+  end
+
+  def or_else(*)
+    self
   end
 
   # rubocop:disable PredicateName
@@ -83,8 +87,12 @@ class None < Maybe
     fail 'No such element'
   end
 
-  def or_else(els = nil)
+  def get_or_else(els = nil)
     block_given? ? yield : els
+  end
+
+  def or_else(els = nil, &block)
+    block ? block.call : els
   end
 
   # rubocop:disable PredicateName

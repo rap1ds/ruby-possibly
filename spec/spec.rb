@@ -136,17 +136,40 @@ describe "possibly" do
     end
   end
 
-  describe "get and or_else" do
+  describe "get and get_or_else" do
     it "get" do
       expect { None.get }.to raise_error
       expect(Some(1).get).to eql(1)
     end
 
-    it "or_else" do
-      expect(None().or_else(true)).to eql(true)
-      expect(None().or_else { false }).to eql(false)
-      expect(Some(1).or_else(2)).to eql(1)
-      expect(Some(1).or_else { 2 }).to eql(1)
+    it "get_or_else" do
+      expect(None().get_or_else(true)).to eql(true)
+      expect(None().get_or_else { false }).to eql(false)
+      expect(Some(1).get_or_else(2)).to eql(1)
+      expect(Some(1).get_or_else { 2 }).to eql(1)
+    end
+  end
+
+  describe "or_else" do
+    it "returns self if it's a Some" do
+      current = Maybe(true)
+      other = Maybe(true)
+
+      expect(current.or_else(other)).to equal current
+    end
+
+    it "returns other if it's a Some" do
+      current = Maybe(nil)
+      other = Maybe(true)
+
+      expect(current.or_else(other)).to equal other
+    end
+
+    it "takes also a block" do
+      current = Maybe(true)
+      other = Maybe(true)
+
+      expect(current.or_else { other }).to equal current
     end
   end
 
@@ -159,9 +182,9 @@ describe "possibly" do
 
   describe "inner" do
     it "forwards all (also Enumerable) methods" do
-      expect(Some(["first", "second", "third"]).inner.first.upcase.or_else { false }).to eql("FIRST")
-      expect(Some(["first", "second", "third"]).inner.map(&:upcase).or_else { false }).to eql(["FIRST", "SECOND", "THIRD"])
-      expect(Some([]).inner.first.upcase.or_else { "NONE" }).to eql("NONE")
+      expect(Some(["first", "second", "third"]).inner.first.upcase.get_or_else { false }).to eql("FIRST")
+      expect(Some(["first", "second", "third"]).inner.map(&:upcase).get_or_else { false }).to eql(["FIRST", "SECOND", "THIRD"])
+      expect(Some([]).inner.first.upcase.get_or_else { "NONE" }).to eql("NONE")
     end
   end
 end
