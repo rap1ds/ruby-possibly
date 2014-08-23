@@ -184,8 +184,8 @@ describe "possibly" do
         v * v
       end
 
-      expect(init_called).to eql(false)
-      expect(map_called).to eql(false)
+      expect(init_called).to eql(lazy_enabled ? false : true)
+      expect(map_called).to eql(lazy_enabled ? false : true)
       expect(m.get).to eql(4)
       expect(init_called).to eql(true)
       expect(map_called).to eql(true)
@@ -199,13 +199,13 @@ describe "possibly" do
         v * v
       end
 
-      expect(map_called).to eql(false)
+      expect(map_called).to eql(lazy_enabled ? false : true)
       expect(m.get).to eql(4)
       expect(map_called).to eql(true)
     end
   end
 
-  def factors(num)
-    Maybe((2..num - 1).select { |n| num % n == 0 })
+  def lazy_enabled
+    @lazy_enabled ||= [].respond_to?(:lazy)
   end
 end

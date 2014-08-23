@@ -166,6 +166,8 @@ However, if you initialize Maybe lazily, we do not know the type before the lazy
 Maybe { "I'm lazy" }                => #<Maybe:0x0000010107a600 @lazy=#<Enumerator::Lazy: #<Enumerator: #<Enumerator::Generator:0x0000010107a768>:each>>>
 ```
 
+This feature needs Ruby version >= 2.0.0.
+
 ## Examples
 
 Instead of using if-clauses to define whether a value is a `nil`, you can wrap the value with `Maybe()` and threat it the same way whether or not it is a `nil`

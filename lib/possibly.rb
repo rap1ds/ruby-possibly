@@ -39,7 +39,11 @@ class Maybe
   # rubocop:enable PredicateName
 
   def lazy
-    Maybe.new(__enumerable_value.lazy)
+    if [].respond_to?(:lazy)
+      Maybe.new(__enumerable_value.lazy)
+    else
+      self
+    end
   end
 
   private
@@ -159,9 +163,10 @@ end
 
 # rubocop:disable MethodName
 def Maybe(value = nil, &block)
-  if block
+  if block && [].respond_to?(:lazy)
     Maybe.from_block(&block)
   else
+    value = block.call if block
     if value.nil? || (value.respond_to?(:length) && value.length == 0)
       None()
     else
