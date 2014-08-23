@@ -116,7 +116,6 @@ when None
 end
 ```
 
-<<<<<<< HEAD
 ## or_else
 
 `or_else` returns the current `Maybe` if it's a `Some`, but if it's a `None`, it returns the parameter that was given to it (which should be a `Maybe`).
@@ -149,7 +148,6 @@ duration = Maybe
   .get_or_else "Unknown"
 ```
 
-=======
 ## Laziness
 
 Ruby 2.0 introduced lazy enumerables. By calling `lazy` on any enumerable, you get the lazy version of it. Same goes with Maybe.
@@ -202,7 +200,6 @@ Maybe { "I'm lazy" }                => #<Maybe:0x0000010107a600 @lazy=#<Enumerat
 
 This feature needs Ruby version >= 2.0.0.
 
->>>>>>> lazy
 ## Examples
 
 Instead of using if-clauses to define whether a value is a `nil`, you can wrap the value with `Maybe()` and threat it the same way whether or not it is a `nil`
