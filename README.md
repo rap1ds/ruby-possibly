@@ -5,7 +5,7 @@
 Maybe monad implementation for Ruby
 
 ```ruby
-puts Maybe(User.find_by_id("123")).username.downcase.or_else { "N/A" }
+puts Maybe(User.find_by_id("123")).username.downcase.get_or_else { "N/A" }
 
 => # puts downcased username if user "123" can be found, otherwise puts "N/A"
 ```
@@ -21,7 +21,7 @@ gem install possibly
 ```
 require 'possibly'
 
-first_name = Maybe(deep_hash)[:account][:profile][:first_name].or_else { "No first name available" }
+first_name = Maybe(deep_hash)[:account][:profile][:first_name].get_or_else { "No first name available" }
 ```
 
 ## Documentation
@@ -38,14 +38,14 @@ Maybe(nil)              => #<None:0x007ff7a852bd20>
 Both `Some` and `None` implement four trivial methods: `is_some?`, `is_none?`, `get` and `or_else`
 
 ```ruby
-Maybe("I'm a value").is_some?               => true
-Maybe("I'm a value").is_none?               => false
-Maybe(nil).is_some?                         => false
-Maybe(nil).is_none?                         => true
-Maybe("I'm a value").get                    => "I'm a value"
-Maybe("I'm a value").or_else { "No value" } => "I'm a value"
-Maybe(nil).get                              => RuntimeError: No such element
-Maybe(nil).or_else { "No value" }           => "No value"
+Maybe("I'm a value").is_some?                   => true
+Maybe("I'm a value").is_none?                   => false
+Maybe(nil).is_some?                             => false
+Maybe(nil).is_none?                             => true
+Maybe("I'm a value").get                        => "I'm a value"
+Maybe("I'm a value").get_or_else { "No value" } => "I'm a value"
+Maybe(nil).get                                  => RuntimeError: No such element
+Maybe(nil).get_or_else { "No value" }           => "No value"
 ```
 
 In addition, `Some` and `None` implement `Enumerable`, so all methods available for `Enumerable` are available for `Some` and `None`:
@@ -134,7 +134,7 @@ end
 With Maybe():
 
 ```ruby
-number_of_friends = Maybe(User.find_by_id(user_id)).friends.count.or_else { 0 }
+number_of_friends = Maybe(User.find_by_id(user_id)).friends.count.get_or_else { 0 }
 ```
 
 Same in HAML view, without Maybe():
@@ -147,7 +147,7 @@ Same in HAML view, without Maybe():
 ```
 
 ```haml
-= Maybe(@user).friends.count.or_else { 0 }
+= Maybe(@user).friends.count.get_or_else { 0 }
 ```
 
 ## Tests

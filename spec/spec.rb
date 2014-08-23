@@ -136,17 +136,17 @@ describe "possibly" do
     end
   end
 
-  describe "get and or_else" do
+  describe "get and get_or_else" do
     it "get" do
       expect { None.get }.to raise_error
       expect(Some(1).get).to eql(1)
     end
 
-    it "or_else" do
-      expect(None().or_else(true)).to eql(true)
-      expect(None().or_else { false }).to eql(false)
-      expect(Some(1).or_else(2)).to eql(1)
-      expect(Some(1).or_else { 2 }).to eql(1)
+    it "get_or_else" do
+      expect(None().get_or_else(true)).to eql(true)
+      expect(None().get_or_else { false }).to eql(false)
+      expect(Some(1).get_or_else(2)).to eql(1)
+      expect(Some(1).get_or_else { 2 }).to eql(1)
     end
   end
 
