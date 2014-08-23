@@ -156,4 +156,12 @@ describe "possibly" do
       expect(Some([1, 2, 3]).map { |arr| arr.map { |v| v * v } }.get).to eql([1, 4, 9])
     end
   end
+
+  describe "inner" do
+    it "forwards all (also Enumerable) methods" do
+      expect(Some(["first", "second", "third"]).inner.first.upcase.or_else { false }).to eql("FIRST")
+      expect(Some(["first", "second", "third"]).inner.map(&:upcase).or_else { false }).to eql(["FIRST", "SECOND", "THIRD"])
+      expect(Some([]).inner.first.upcase.or_else { "NONE" }).to eql("NONE")
+    end
+  end
 end
