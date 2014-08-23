@@ -150,6 +150,29 @@ describe "possibly" do
     end
   end
 
+  describe "or_else" do
+    it "returns self if it's a Some" do
+      current = Maybe(true)
+      other = Maybe(true)
+
+      expect(current.or_else(other)).to equal current
+    end
+
+    it "returns other if it's a Some" do
+      current = Maybe(nil)
+      other = Maybe(true)
+
+      expect(current.or_else(other)).to equal other
+    end
+
+    it "takes also a block" do
+      current = Maybe(true)
+      other = Maybe(true)
+
+      expect(current.or_else { other }).to equal current
+    end
+  end
+
   describe "forward" do
     it "forwards methods" do
       expect(Some("maybe").upcase.get).to eql("MAYBE")

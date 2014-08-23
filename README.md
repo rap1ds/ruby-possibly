@@ -116,6 +116,26 @@ when None
 end
 ```
 
+## or_else
+
+`or_else` returns the current `Maybe` if it's a `Some`, but if it's a `None`, it returns the parameter that was given to it (which should be a `Maybe`).
+
+Here's an example: Show "title", which is person's job title or degree if she doesn't have a job or "Unknown" if both are missing.
+
+```ruby
+maybe_person = Maybe(person)
+
+title = maybe_person.job.title.or_else { maybe_person.degree }.get_or_else { "Unknown" }
+
+title = if person && person.job && person.job.title.present?
+  person.job.title
+elsif person && person.degree.present?
+  person.degree
+else
+  "Unknown"
+end
+```
+
 ## Examples
 
 Instead of using if-clauses to define whether a value is a `nil`, you can wrap the value with `Maybe()` and threat it the same way whether or not it is a `nil`
