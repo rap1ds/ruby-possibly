@@ -218,6 +218,22 @@ describe "possibly" do
       expect(Maybe.combine(Maybe("foo"), Maybe(nil)).get_or_else { false }).to eql(false)
       expect(Maybe.combine(Maybe("foo"), Maybe(nil)) { |a, b| "#{a} + #{b}" }.get_or_else { false }).to eql(false)
     end
+
+    it "is lazy" do
+      called1, called2, called3, combine_called, map_called = false, false, false, false, false
+
+      m = Maybe { called1 = true ; 1 }.combine(Maybe { called2 = true ; 2 }, Maybe { called3 = true ; 3 })
+
+      sum = m.map { |(v1, v2, v3)| map_called = true ; v1 + v2 + v3 }
+
+      expect(called1).to eql false
+      expect(called2).to eql false
+      expect(called3).to eql false
+      expect(combine_called).to eql false
+      expect(map_called).to eql false
+
+      expect(sum.get).to eql 6
+    end
   end
 
   describe "laziness" do

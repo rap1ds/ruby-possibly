@@ -46,17 +46,19 @@ class Maybe
     end
   end
 
-  def combine(*maybes)
-    Maybe.combine(self, *maybes)
+  def combine(*lazys)
+    Maybe.from_block {
+      if lazys.all? { |maybe| maybe.is_some? }
+        [self.get] + lazys.map(&:get)
+      else
+        nil
+      end
+    }
   end
 
   def self.combine(*maybes)
-    if maybes.any?(&:is_none?)
-      None()
-    else
-      values = maybes.map(&:get)
-      Maybe(values)
-    end
+    first, *rest = *maybes
+    first.combine(*rest)
   end
 
   private
@@ -137,6 +139,14 @@ class Some < Maybe
     super || (other.class == Maybe && other.is_some?)
   end
 
+  def combine(*maybes)
+    if maybes.all? { |maybe| maybe.is_some? }
+      Maybe([self.get] + maybes.map(&:get))
+    else
+      None()
+    end
+  end
+
   def method_missing(method_sym, *args, &block)
     map { |value| value.send(method_sym, *args, &block) }
   end
@@ -187,6 +197,10 @@ class None < Maybe
   end
 
   def method_missing(*)
+    self
+  end
+
+  def combine(*)
     self
   end
 
