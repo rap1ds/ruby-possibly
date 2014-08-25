@@ -220,19 +220,23 @@ describe "possibly" do
     end
 
     it "is lazy" do
-      called1, called2, called3, combine_called, map_called = false, false, false, false, false
+      called1, called2, called3, map_called = false, false, false, false
 
       m = Maybe { called1 = true ; 1 }.combine(Maybe { called2 = true ; 2 }, Maybe { called3 = true ; 3 })
 
       sum = m.map { |(v1, v2, v3)| map_called = true ; v1 + v2 + v3 }
 
-      expect(called1).to eql false
-      expect(called2).to eql false
-      expect(called3).to eql false
-      expect(combine_called).to eql false
-      expect(map_called).to eql false
+      expect(called1).to eql(lazy_enabled ? false : true)
+      expect(called2).to eql(lazy_enabled ? false : true)
+      expect(called3).to eql(lazy_enabled ? false : true)
+      expect(map_called).to eql(lazy_enabled ? false : true)
 
       expect(sum.get).to eql 6
+
+      expect(called1).to eql(true)
+      expect(called2).to eql(true)
+      expect(called3).to eql(true)
+      expect(map_called).to eql(true)
     end
   end
 
