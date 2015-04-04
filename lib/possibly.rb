@@ -1,3 +1,6 @@
+class ValueExpectedException < Exception
+end
+
 class Maybe
   ([:each] + Enumerable.instance_methods).each do |enumerable_method|
     define_method(enumerable_method) do |*args, &block|
@@ -28,6 +31,10 @@ class Some < Maybe
   end
 
   def or_else(*)
+    @value
+  end
+
+  def or_raise(*)
     @value
   end
 
@@ -69,6 +76,10 @@ class None < Maybe
 
   def or_else(els = nil)
     block_given? ? yield : els
+  end
+
+  def or_raise(msg = nil)
+    raise ValueExpectedException.new(msg)
   end
 
   # rubocop:disable PredicateName

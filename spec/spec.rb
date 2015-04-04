@@ -150,6 +150,16 @@ describe "possibly" do
     end
   end
 
+  describe "or_raise" do
+    it "gets" do
+      expect(Maybe(1).or_raise).to eq(1)
+    end
+
+    it "raises with message" do
+      expect{ Maybe(nil).or_raise("must be Some") }.to raise_error(ValueExpectedException, "must be Some")
+    end
+  end
+
   describe "forward" do
     it "forwards methods" do
       expect(Some("maybe").upcase.get).to eql("MAYBE")
