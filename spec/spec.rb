@@ -138,7 +138,14 @@ describe "possibly" do
 
   describe "get and or_else" do
     it "get" do
-      expect { None.get }.to raise_error
+      message = [
+        "`get` called to None. A value was expected.",
+        "",
+        "None => None",
+        ""
+      ].join("\n")
+
+      expect { None().get }.to raise_error(ValueExpectedException, message)
       expect(Some(1).get).to eql(1)
     end
 
@@ -155,9 +162,50 @@ describe "possibly" do
       expect(Maybe(1).or_raise).to eq(1)
     end
 
-    it "raises with message" do
-      expect{ Maybe(nil).or_raise("must be Some") }.to raise_error(ValueExpectedException, "must be Some")
+    it "raises with 'stack'" do
+      data = {
+        hash: {
+          number: {
+            name: nil,
+            value: 1
+          }
+        }
+      }
+
+      message = [
+        "`or_raise` called to None. A value was expected.",
+        "",
+        "Maybe       => Some({:hash=>{:number=>{:name=>nil, :value=>1}}})",
+        "[:hash]     => Some({:number=>{:name=>nil, :value=>1}})",
+        "map         => None",
+        "select      => None",
+        "[:name]     => None",
+        "slice(1, 4) => None",
+        ""
+      ].join("\n")
+
+      expect {
+        Maybe(data)[:hash].map { |h|
+          h[:numbers]
+        }.select {
+          |number| number[:value].odd?
+        }[:name].slice(1,4).or_raise()
+
+      }.to raise_error(ValueExpectedException, message)
     end
+
+    it "raises with stack and message" do
+
+      message = [
+        "must be Some",
+        "",
+        "Maybe => None",
+        ""
+      ].join("\n")
+
+      expect{ Maybe(nil).or_raise("must be Some") }.to raise_error(ValueExpectedException, message)
+    end
+
   end
 
   describe "forward" do
