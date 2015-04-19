@@ -165,9 +165,30 @@ class None < Maybe
     block_given? ? yield : els
   end
 
-  def or_raise(msg = nil)
-    msg ||= "`or_raise` called to None. A value was expected."
-    raise ValueExpectedException.new(print_error(msg))
+  def or_raise(*args)
+    opts, args = extract_opts(args)
+    msg_or_exception, msg = args
+    default_message = "`or_raise` called to None. A value was expected."
+
+    exception_object =
+      if msg_or_exception.respond_to? :exception
+        if msg
+          msg_or_exception.exception(msg)
+        else
+          msg_or_exception.exception
+        end
+      else
+        ValueExpectedException.new(msg_or_exception || default_message)
+      end
+
+    exception_and_stack =
+      if opts[:print_stack] == false
+        exception_object
+      else
+        exception_object.exception(print_error(exception_object.message))
+      end
+
+    raise exception_and_stack
   end
 
   # rubocop:disable PredicateName
@@ -193,6 +214,16 @@ class None < Maybe
 
   def __enumerable_value
     []
+  end
+
+  def extract_opts(args)
+    *initial, last = *args
+
+    if last.is_a?(::Hash)
+      [last, initial]
+    else
+      [{}, args]
+    end
   end
 end
 

@@ -206,6 +206,36 @@ describe "possibly" do
       expect{ Maybe(nil).or_raise("must be Some") }.to raise_error(ValueExpectedException, message)
     end
 
+    it "has the same interface as Kernel raise method" do
+      with_stack = ->(msg) {
+        [msg, "", "Maybe => None", ""].join("\n")
+      }
+
+      msg = "message and stack"
+      expect{Maybe(nil).or_raise(msg) }
+        .to raise_error(ValueExpectedException, with_stack.call(msg))
+
+      msg = "message without stack"
+      expect{Maybe(nil).or_raise(msg, print_stack: false) }
+        .to raise_error(ValueExpectedException, msg)
+
+      msg = "argument error object and stack"
+      expect{Maybe(nil).or_raise(ArgumentError.new(msg)) }
+        .to raise_error(ArgumentError, with_stack.call(msg))
+
+      msg = "argument error object without stack"
+      expect{Maybe(nil).or_raise(ArgumentError.new(msg), print_stack: false) }
+        .to raise_error(ArgumentError, msg)
+
+      msg = "argument error class, message and stack "
+      expect{Maybe(nil).or_raise(ArgumentError, msg) }
+        .to raise_error(ArgumentError, with_stack.call(msg))
+
+      msg = "argument error class, message without stack "
+      expect{Maybe(nil).or_raise(ArgumentError, msg, print_stack: false) }
+        .to raise_error(ArgumentError, msg)
+    end
+
   end
 
   describe "forward" do
