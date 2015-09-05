@@ -102,15 +102,15 @@ end
 For more complicated matching you can use Procs and lambdas. Proc class aliases #=== to the #call method. In practice this means that you can use Procs and lambdas in case expressions. It works also nicely with Maybe:
 
 ```ruby
-even? = ->(a) { a % 2 == 0 }
-odd? = ->(a) { a % 2 != 0 }
+even = ->(a) { a % 2 == 0 }
+odd = ->(a) { a % 2 != 0 }
 
 value = Maybe([nil, 1, 2, 3, 4, 5, 6].sample)
 
 case value
-when Some(even?)
+when Some(even)
   puts "Got even value: #{value.get}"
-when Some(odd?)
+when Some(odd)
   puts "Got odd value: #{value.get}"
 when None
   puts "Got None"
