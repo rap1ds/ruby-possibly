@@ -235,7 +235,16 @@ describe "possibly" do
       expect{Maybe(nil).or_raise(ArgumentError, msg, print_stack: false) }
         .to raise_error(ArgumentError, msg)
     end
+  end
 
+  describe "or_nil" do
+    it "gets the value" do
+      expect(Maybe(1).or_nil).to eq(1)
+    end
+
+    it "returns nil for None" do
+      expect(Maybe(1).select { |v| v.even? }.or_nil).to eq(nil)
+    end
   end
 
   describe "forward" do
