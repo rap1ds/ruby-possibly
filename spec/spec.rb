@@ -138,7 +138,14 @@ describe "possibly" do
 
   describe "get and or_else" do
     it "get" do
-      expect { None.get }.to raise_error
+      message = [
+        "`get` called to None. A value was expected.",
+        "",
+        "None => None",
+        ""
+      ].join("\n")
+
+      expect { None().get }.to raise_error(None::ValueExpectedException, message)
       expect(Some(1).get).to eql(1)
     end
 
@@ -148,6 +155,87 @@ describe "possibly" do
       expect(Some(1).or_else(2)).to eql(1)
       expect(Some(1).or_else { 2 }).to eql(1)
     end
+  end
+
+  describe "or_raise" do
+    it "gets" do
+      expect(Maybe(1).or_raise).to eq(1)
+    end
+
+    it "raises with 'stack'" do
+      data = {
+        hash: {
+          number: {
+            name: nil,
+            value: 1
+          }
+        }
+      }
+
+      message = [
+        "`or_raise` called to None. A value was expected.",
+        "",
+        "Maybe       => Some({:hash=>{:number=>{:name=>nil, :value=>1}}})",
+        "[:hash]     => Some({:number=>{:name=>nil, :value=>1}})",
+        "map         => None",
+        "select      => None",
+        "[:name]     => None",
+        "slice(1, 4) => None",
+        ""
+      ].join("\n")
+
+      expect {
+        Maybe(data)[:hash].map { |h|
+          h[:numbers]
+        }.select {
+          |number| number[:value].odd?
+        }[:name].slice(1,4).or_raise()
+
+      }.to raise_error(None::ValueExpectedException, message)
+    end
+
+    it "raises with stack and message" do
+
+      message = [
+        "must be Some",
+        "",
+        "Maybe => None",
+        ""
+      ].join("\n")
+
+      expect{ Maybe(nil).or_raise("must be Some") }.to raise_error(None::ValueExpectedException, message)
+    end
+
+    it "has the same interface as Kernel raise method" do
+      with_stack = ->(msg) {
+        [msg, "", "Maybe => None", ""].join("\n")
+      }
+
+      msg = "message and stack"
+      expect{Maybe(nil).or_raise(msg) }
+        .to raise_error(None::ValueExpectedException, with_stack.call(msg))
+
+      msg = "message without stack"
+      expect{Maybe(nil).or_raise(msg, print_stack: false) }
+        .to raise_error(None::ValueExpectedException, msg)
+
+      msg = "argument error object and stack"
+      expect{Maybe(nil).or_raise(ArgumentError.new(msg)) }
+        .to raise_error(ArgumentError, with_stack.call(msg))
+
+      msg = "argument error object without stack"
+      expect{Maybe(nil).or_raise(ArgumentError.new(msg), print_stack: false) }
+        .to raise_error(ArgumentError, msg)
+
+      msg = "argument error class, message and stack "
+      expect{Maybe(nil).or_raise(ArgumentError, msg) }
+        .to raise_error(ArgumentError, with_stack.call(msg))
+
+      msg = "argument error class, message without stack "
+      expect{Maybe(nil).or_raise(ArgumentError, msg, print_stack: false) }
+        .to raise_error(ArgumentError, msg)
+    end
+
   end
 
   describe "forward" do
