@@ -50,6 +50,8 @@ Maybe(nil).or_else { "No value" }           => "No value"
 Maybe("I'm a value").or_raise               => "I'm a value"
 Maybe(nil).or_raise                         => None::ValueExpectedException: `or_raise` called to None. A value was expected.
 Maybe(nil).or_raise(ArgumentError)          => ArgumentError
+Maybe("I'm a value").or_nil                 => "I'm a value"
+Maybe([]).or_nil                            => nil
 ```
 
 In addition, `Some` and `None` implement `Enumerable`, so all methods available for `Enumerable` are available for `Some` and `None`:
