@@ -99,6 +99,10 @@ class Some < Maybe
     @value
   end
 
+  def or_nil
+    @value
+  end
+
   # rubocop:disable PredicateName
   def is_some?
     true
@@ -177,6 +181,10 @@ class None < Maybe
       end
 
     raise exception_and_stack
+  end
+
+  def or_nil
+    nil
   end
 
   # rubocop:disable PredicateName
