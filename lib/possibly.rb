@@ -1,7 +1,4 @@
 # coding: utf-8
-class ValueExpectedException < Exception
-end
-
 class Maybe
   ([:each] + Enumerable.instance_methods).each do |enumerable_method|
     define_method(enumerable_method) do |*args, &block|
@@ -151,6 +148,9 @@ end
 
 # Represents an empty value
 class None < Maybe
+
+  class ValueExpectedException < Exception; end
+
   def initialize(parent = nil, inst_method = nil)
     @parent = parent
     @inst_method = inst_method || "None.new"

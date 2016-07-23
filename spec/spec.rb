@@ -145,7 +145,7 @@ describe "possibly" do
         ""
       ].join("\n")
 
-      expect { None().get }.to raise_error(ValueExpectedException, message)
+      expect { None().get }.to raise_error(None::ValueExpectedException, message)
       expect(Some(1).get).to eql(1)
     end
 
@@ -191,7 +191,7 @@ describe "possibly" do
           |number| number[:value].odd?
         }[:name].slice(1,4).or_raise()
 
-      }.to raise_error(ValueExpectedException, message)
+      }.to raise_error(None::ValueExpectedException, message)
     end
 
     it "raises with stack and message" do
@@ -203,7 +203,7 @@ describe "possibly" do
         ""
       ].join("\n")
 
-      expect{ Maybe(nil).or_raise("must be Some") }.to raise_error(ValueExpectedException, message)
+      expect{ Maybe(nil).or_raise("must be Some") }.to raise_error(None::ValueExpectedException, message)
     end
 
     it "has the same interface as Kernel raise method" do
@@ -213,11 +213,11 @@ describe "possibly" do
 
       msg = "message and stack"
       expect{Maybe(nil).or_raise(msg) }
-        .to raise_error(ValueExpectedException, with_stack.call(msg))
+        .to raise_error(None::ValueExpectedException, with_stack.call(msg))
 
       msg = "message without stack"
       expect{Maybe(nil).or_raise(msg, print_stack: false) }
-        .to raise_error(ValueExpectedException, msg)
+        .to raise_error(None::ValueExpectedException, msg)
 
       msg = "argument error object and stack"
       expect{Maybe(nil).or_raise(ArgumentError.new(msg)) }
