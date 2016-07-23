@@ -4,7 +4,7 @@ class Maybe
     define_method(enumerable_method) do |*args, &block|
       @invocation ||= [enumerable_method, args, block]
       res = __enumerable_value.send(enumerable_method, *args, &block)
-      res.respond_to?(:each) ? Maybe(res.first, self) : res
+      res.respond_to?(:each) ? Maybe(res.first, self.stack, @invocation) : res
     end
   end
 
@@ -44,11 +44,7 @@ class Maybe
   end
 
   def stack
-    if @parent
-      @parent.stack + [self_stack]
-    else
-      [self_stack]
-    end
+    @parent_stack + [self_stack]
   end
 
   def self_stack
@@ -57,15 +53,7 @@ class Maybe
 
 
   def inst_method
-    if @parent
-      "#{print_method(@parent.invocation)}"
-    else
-      @inst_method
-    end
-  end
-
-  def invocation
-    @invocation
+    "#{print_method(@inst_method)}"
   end
 
   def print_method(invocation)
@@ -93,10 +81,10 @@ end
 
 # Represents a non-empty value
 class Some < Maybe
-  def initialize(value, parent = nil, inst_method = nil)
-    @parent = parent
+  def initialize(value, inst_method = nil, parent_stack = [])
     @value = value
-    @inst_method = inst_method || "Some.new"
+    @inst_method = inst_method || ["Some.new", []]
+    @parent_stack = parent_stack
   end
 
   def get
@@ -151,9 +139,9 @@ class None < Maybe
 
   class ValueExpectedException < Exception; end
 
-  def initialize(parent = nil, inst_method = nil)
-    @parent = parent
-    @inst_method = inst_method || "None.new"
+  def initialize(inst_method = nil, parent_stack = [])
+    @inst_method = inst_method || ["None.new", []]
+    @parent_stack = parent_stack
   end
 
   def get
@@ -202,8 +190,7 @@ class None < Maybe
   # rubocop:enable PredicateName
 
   def method_missing(method_sym, *args, &block)
-    @invocation ||= [method_sym, args, block]
-    None(self)
+    None([method_sym, args, block], self.stack)
   end
 
   def to_s
@@ -228,19 +215,22 @@ class None < Maybe
 end
 
 # rubocop:disable MethodName
-def Maybe(value, parent = nil)
+def Maybe(value, parent_stack = [], inst_method = nil)
+  inst_method ||= ["Maybe", []]
   if value.nil? || (value.respond_to?(:length) && value.length == 0)
-    None(parent, "Maybe")
+    None(inst_method, parent_stack)
   else
-    Some(value, parent, "Maybe")
+    Some(value, inst_method, parent_stack)
   end
 end
 
-def Some(value, parent = nil, inst_method = nil)
-  Some.new(value, parent, inst_method || "Some")
+def Some(value, inst_method = nil, parent_stack = [])
+  inst_method ||= ["Some", []]
+  Some.new(value, inst_method, parent_stack)
 end
 
-def None(parent = nil, inst_method = nil)
-  None.new(parent, inst_method || "None")
+def None(inst_method = nil, parent_stack = [])
+  inst_method ||= ["None", []]
+  None.new(inst_method, parent_stack)
 end
 # rubocop:enable MethodName
