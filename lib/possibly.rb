@@ -48,7 +48,7 @@ class Maybe
 
   def stack
     if @parent
-      @parent.stack << self_stack
+      @parent.stack + [self_stack]
     else
       [self_stack]
     end
