@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'possibly'
-  s.version     = '0.2.0'
+  s.version     = '1.0.0'
   s.date        = '2014-04-25'
   s.summary     = "Maybe monad"
   s.description = "Maybe monad implementation for Ruby (some might call it Option pattern or Null pattern)"
